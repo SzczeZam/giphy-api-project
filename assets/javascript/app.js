@@ -1,5 +1,5 @@
 var topics = ['cats','dogs','endorphins','cute animals','motivation']  
-
+var offsetCount = 0
 var API_KEY = 'KcIutgRHpXi85QG3IKY3GUbvfEOrIzS5'
 
 
@@ -21,14 +21,21 @@ function renderBtn(){
 
 function displayGifs(){
     var topic = $(this).attr('data-topic')
-    var queryURL = 'http://api.giphy.com/v1/gifs/search?q=' + topic + '&rating=pg13&limit=10&api_key=' + API_KEY
+    var queryURL = 'http://api.giphy.com/v1/gifs/search?q=' + topic + '&rating=pg13&limit=10&offset=' + offsetCount + '&api_key=' + API_KEY
     $.ajax({
         url: queryURL,
         method: 'GET',
     }).then(function(response){
+        $('#gif-display').empty()
         for (var i = 0; i < response.data.length; i++){
-            var linkAnimate = response.data[i].images.fixed_width.url
-            var linkStill = response.data[i].images.fixed_width_still.url
+            var linkAnimate = response.data[i].images.fixed_height.url
+            var linkStill = response.data[i].images.fixed_height_still.url
+            var rating = response.data[i].rating
+            
+            var newDiv = $('<div />', {id: 'image box'})
+
+            var newP = $('<p />', {class: 'rating-text'}).text(rating)
+
             var newImage = $('<img />', {
                 src: linkStill,
                 class: 'gifs',
@@ -36,9 +43,13 @@ function displayGifs(){
                 'data-still': linkStill,
                 'data-animate': linkAnimate,
             })
-            $('#gif-display').prepend(newImage)
+
+           $(newDiv).append(newImage)
+           $(newDiv).append(newP)
+            $('#gif-display').prepend(newDiv)
         }
     })
+    offsetCount = offsetCount + 10
 }
 
 
@@ -54,6 +65,7 @@ $('#gif-display').on('click', '.gifs', function(e){
 
         $(this).attr('src', animate)
         $(this).attr('data-state', 'animate')
+
     } else if (state === 'animate') {
         $(this).attr('src', still)
         $(this).attr('data-state', 'still')

@@ -1,0 +1,15 @@
+#gif-display {
+    width: 50%;
+    margin: 0 auto;
+}
+
+#button-bar {
+    width: 50%;
+    margin: 0 auto;
+    align-items: center;
+    
+}
+
+.gifBtn {
+    margin: 1%
+}
